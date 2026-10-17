@@ -31,8 +31,6 @@ The project is developed incrementally through small experiments, with an emphas
 
 ```text
 03-feature-matching-lab/
-├── .vscode/
-│   └── settings.json
 ├── images/
 │   ├── input/
 │   │   ├── siegestor.jpg
