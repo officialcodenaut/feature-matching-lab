@@ -1,7 +1,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/features2d.hpp>
-#include <opencv2/features.hpp>
+#include <opencv2/calib3d.hpp>
 #include <cstdio>
 #include <vector>
 
@@ -112,6 +112,38 @@ int main(){
     if(!cv::imwrite("images\\output\\07_siegestor_matches_ratio.jpg", output_matches)){
         std::printf("Failed to save matches image\n");
         return 5;
+    }
+
+    std::vector<cv::Point2f> points1;
+    std::vector<cv::Point2f> points2;
+
+    for(int i = 0; i < filtered_matches.size(); i++){
+        points1.push_back(keypoints_i1[filtered_matches[i].queryIdx].pt);
+        points2.push_back(keypoints_i2[filtered_matches[i].trainIdx].pt);
+    }
+
+    cv::Mat inlier_mask;
+
+    cv::findHomography(points1, points2, cv::RANSAC, 3.0, inlier_mask);
+
+    int inlier_count = cv::countNonZero(inlier_mask);
+
+    std::printf("Inliers after RANSAC: %d\n", inlier_count);
+
+    std::vector<cv::DMatch> inlier_matches;
+    cv::Mat flat_mask = inlier_mask.reshape(1, 1);
+
+    for(int i = 0; i < filtered_matches.size(); i++){
+        if(flat_mask.at<uchar>(0, i) != 0){
+            inlier_matches.push_back(filtered_matches[i]);
+        }
+    }
+
+    cv::drawMatches(input1, keypoints_i1, input2, keypoints_i2, inlier_matches, output_matches);
+
+    if(!cv::imwrite("images\\output\\11_siegestor_matches_RANSAC_3.jpg", output_matches)){
+        std::printf("Failed to save RANSAC image\n");
+        return 6;
     }
 
     return 0;
