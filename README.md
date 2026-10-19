@@ -87,7 +87,6 @@ feature-matching-lab/
 - `src/` contains the C++ implementation.
 - `images/input/` contains the source images and their attribution information.
 - `images/output/` contains generated visualizations from the experiments.
-- `.vscode/` contains project-specific Visual Studio Code settings.
 - `CMakeLists.txt` defines the build configuration.
 
 Generated build files and other local artifacts are excluded from version control.
