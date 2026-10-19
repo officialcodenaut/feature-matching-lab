@@ -2,6 +2,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
 #include <cstdio>
 #include <vector>
 
@@ -26,7 +27,8 @@ int main(){
         return 2;
     }
 
-    std::printf("Columns: %d\nRows: %d\n", input1.cols, input1.rows);
+    std::printf("INPUT1: Columns: %d Rows: %d\n", input1.cols, input1.rows);
+    std::printf("INPUT2: Columns: %d Rows: %d\n", input2.cols, input2.rows);
 
     orb = cv::ORB::create(10000);
     
@@ -60,39 +62,7 @@ int main(){
 
     std::printf("Number of matches: %zu\n", matches.size());
 
-    // for(int i = 0; i < 10; i++){
-    //     std::printf("Match %d: distance: %f queryIdx: %d trainIdx: %d\n", i, matches[i].distance, matches[i].queryIdx, matches[i].trainIdx);
-    // }
-
-    // float minDistance = matches[0].distance;
-    // float maxDistance = matches[0].distance;
-    // int zeroCount = 0;
-
-    // for(int i = 0; i < matches.size(); i++){
-
-    //     if(matches[i].distance < minDistance){
-    //         minDistance = matches[i].distance;
-    //     }
-
-    //     else if(matches[i].distance > maxDistance){
-    //         maxDistance = matches[i].distance;
-    //     }
-
-    //     if(matches[i].distance == 0){
-    //         zeroCount++;
-    //     }
-    // }
-
-    // std::printf("minDistance: %f, maxDistance: %f, zeroCount: %d\n", minDistance, maxDistance, zeroCount);
-
     cv::Mat output_matches;
-
-    //cv::drawMatches(input1, keypoints_i1, input2, keypoints_i2, matches, output_matches);
-
-    // if(!cv::imwrite("images\\output\\03_siegestor_matches.jpg", output_matches)){
-    //     std::printf("Failed to save matches image\n");
-    //     return 4;
-    // }
 
     std::vector<cv::DMatch> filtered_matches;
     float ratio_threshold = 0.75f;
@@ -124,7 +94,7 @@ int main(){
 
     cv::Mat inlier_mask;
 
-    cv::findHomography(points1, points2, cv::RANSAC, 3.0, inlier_mask);
+    cv::Mat homography = cv::findHomography(points1, points2, cv::RANSAC, 3.0, inlier_mask);
 
     int inlier_count = cv::countNonZero(inlier_mask);
 

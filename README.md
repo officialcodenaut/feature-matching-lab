@@ -2,21 +2,23 @@
 
 **Feature Matching Lab (FML)** is a C++ and OpenCV project exploring local feature detection, binary descriptors, image matching, and geometric verification.
 
-The project is built around practical experiments designed to develop a deeper understanding of computer vision algorithms, their underlying mathematics, and their behavior on real images.
+The project focuses on practical experiments designed to develop a deeper understanding of computer vision algorithms, their underlying mathematics, and their behavior on real images.
 
 ## Overview
 
 FML investigates how distinctive visual features can be detected in two images, matched across different viewpoints, and filtered according to geometric consistency.
 
-The current implementation uses two photographs of the Siegestor monument in Munich to explore the following pipeline:
+The project uses two photographs of the Siegestor monument in Munich to explore the following pipeline:
 
-**ORB → Descriptor Matching → Lowe's Ratio Test → Homography Estimation → RANSAC**
+**ORB -> Descriptor Matching -> Lowe's Ratio Test -> Homography Estimation -> RANSAC**
 
 ## Project Status
 
-The original scope of FML is largely implemented. The project covers the complete feature-matching workflow, from ORB keypoint detection and descriptor extraction to descriptor matching, ratio-test filtering, homography estimation, and RANSAC-based geometric verification.
+The original scope of FML is complete. The project implements a feature-matching pipeline using ORB, binary descriptor matching, Lowe's ratio test, homography estimation, and RANSAC-based geometric verification.
 
-The remaining work focuses on validating the estimated homography and documenting the results. Further algorithm comparisons and additional experiments may be explored separately, but are not required to complete the original scope.
+Additional experiments explored the effects of RANSAC reprojection thresholds and the limitations of projecting an entire image between different viewpoints. The results and observations are documented in the repository.
+
+Further algorithm comparisons and more advanced experiments are outside the scope of this version.
 
 ## Implementation
 
@@ -40,11 +42,11 @@ RANSAC identifies inliers that are consistent with the estimated projective tran
 
 Experiments with different reprojection thresholds demonstrate how parameter selection affects the number of accepted inliers and the resulting visualization.
 
-A larger inlier count does not necessarily imply a better geometric model. The spatial distribution of matches and the plausibility of the resulting transformation also matter.
+A larger inlier count does not necessarily imply a better geometric model. The spatial distribution of matches and the plausibility of the estimated transformation also matter. A homography that fits selected correspondences well does not necessarily provide a reliable projection of the entire image.
 
 ## Experimental Results
 
-The repository contains visualizations from different stages of the matching pipeline:
+The repository contains visualizations from different stages of the matching pipeline.
 
 | Output | Description |
 |---|---|
@@ -55,12 +57,12 @@ The repository contains visualizations from different stages of the matching pip
 | `05_siegestor_matches_filter30.jpg` | Matches filtered using a distance threshold of 30 |
 | `06_siegestor_matches_filter50.jpg` | Matches filtered using a distance threshold of 50 |
 | `07_siegestor_matches_ratio.jpg` | Matches retained by Lowe's ratio test |
-| `08_siegestor_matches_RANSAC.jpg` | RANSAC-filtered matches |
+| `08_siegestor_matches_RANSAC.jpg` | Matches filtered using RANSAC |
 | `09_siegestor_matches_RANSAC_0_5.jpg` | RANSAC results with a 0.5-pixel reprojection threshold |
 | `10_siegestor_matches_RANSAC_1.jpg` | RANSAC results with a 1.0-pixel reprojection threshold |
 | `11_siegestor_matches_RANSAC_3.jpg` | RANSAC results with a 3.0-pixel reprojection threshold |
 
-The output images document the evolution of the experiment, from initial descriptor matching to geometric verification.
+The output images document the evolution of the experiment, from initial descriptor matching to geometric verification. They also illustrate how the selected parameters affect the resulting correspondences.
 
 ## Project Structure
 
@@ -68,9 +70,9 @@ The output images document the evolution of the experiment, from initial descrip
 feature-matching-lab/
 ├── images/
 │   ├── input/
+│   │   ├── ATTRIBUTION.md
 │   │   ├── siegestor.jpg
-│   │   ├── siegestor2.jpg
-│   │   └── ATTRIBUTION.md
+│   │   └── siegestor2.jpg
 │   └── output/
 │       ├── 01_siegestor_keypoints_i1.jpg
 │       ├── 02_siegestor_keypoints_i2.jpg
@@ -92,10 +94,9 @@ feature-matching-lab/
 
 - `src/` contains the C++ implementation.
 - `images/input/` contains the source images and their attribution information.
-- `images/output/` contains generated visualizations from the experiments.
+- `images/output/` contains visualizations generated during the experiments.
 - `CMakeLists.txt` defines the build configuration.
-
-Generated build files and other local artifacts are excluded from version control.
+- `.gitignore` excludes generated build files and other local artifacts from version control.
 
 ## Technologies
 
@@ -116,14 +117,7 @@ FML explores several core computer vision concepts:
 - Homography estimation and projective transformations
 - RANSAC, inlier selection, and reprojection thresholds
 - The difference between descriptor similarity and geometric consistency
-
-## Current Direction
-
-The feature-matching pipeline and RANSAC-based filtering are implemented.
-
-The next stage focuses on evaluating the estimated homography by projecting image corners and examining whether the resulting transformation is geometrically plausible.
-
-Further experiments may investigate the effects of viewpoint, scale, illumination, and image content on matching reliability.
+- The limitations of estimating geometric transformations from real image correspondences
 
 ## Image Attribution
 
