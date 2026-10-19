@@ -17,10 +17,13 @@ This file documents the sources and licenses of the images used as input data fo
 - **Author:** Martin Falbisoner
 - **Source:** [Wikimedia Commons — Siegestor Munich at dusk, 5 June 2015](https://commons.wikimedia.org/wiki/File:Siegestor_Munich_at_dusk,_5_June_2015.jpg)
 - **License:** [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/)
+
 ## Usage
 
-These images are used as input data for computer vision experiments with OpenCV. Processing may include keypoint detection, feature descriptor extraction, feature matching, and visualization.
+These images are used as input data for computer vision experiments with OpenCV. Processing includes keypoint detection, descriptor extraction, feature matching, geometric verification, and visualization.
+
+The original image files are retained as input data. Generated visualizations are saved separately in `images/output/`.
 
 ## Changes Made
 
-The images are used as input data for analysis and processing by the project. Any modifications to the original image files should be documented here if applicable.
+No modifications to the original input image files are intended. All generated processing results are stored separately from the source images.

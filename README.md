@@ -1,36 +1,65 @@
 # Feature Matching Lab (FML)
 
-A C++ and OpenCV project exploring local feature detection, feature descriptors, and image matching.
+**Feature Matching Lab (FML)** is a C++ and OpenCV project exploring local feature detection, binary descriptors, image matching, and geometric verification.
 
-## Goal
+The project is built around practical experiments designed to develop a deeper understanding of computer vision algorithms, their underlying mathematics, and their behavior on real images.
 
-The goal of this project is to understand how computer vision algorithms detect distinctive points in images, describe their local appearance, and match corresponding features across different views.
+## Overview
 
-The project is developed incrementally through small experiments, with an emphasis on understanding the underlying algorithms and data structures rather than relying entirely on high-level abstractions.
+FML investigates how distinctive visual features can be detected in two images, matched across different viewpoints, and filtered according to geometric consistency.
 
-## Implemented Features
+The current implementation uses two photographs of the Siegestor monument in Munich to explore the following pipeline:
 
-- [x] Detect keypoints in images using ORB
-- [x] Visualize detected keypoints
-- [x] Compute and inspect ORB feature descriptors
-- [x] Match descriptors using a brute-force matcher with Hamming distance
-- [x] Inspect match distances and basic matching statistics
-- [ ] Filter matches by descriptor distance
-- [ ] Visualize matches between images
-- [ ] Experiment with changes in viewpoint, scale, and lighting
+**ORB → Descriptor Matching → Lowe's Ratio Test → Homography Estimation → RANSAC**
 
-## Technologies
+## Implementation
 
-- C++
-- OpenCV
-- CMake
-- Git
-- Visual Studio Code
+### Feature Detection and Description
+
+The project uses ORB (Oriented FAST and Rotated BRIEF) to detect keypoints and compute binary descriptors in both images.
+
+Detected keypoints are visualized, while descriptor matrix dimensions and keypoint counts are reported for inspection.
+
+### Descriptor Matching
+
+Descriptors are compared using `cv::BFMatcher` with `cv::NORM_HAMMING`, a distance metric appropriate for ORB's binary descriptors.
+
+K-nearest-neighbor matching retrieves the two nearest candidates for each query descriptor. Lowe's ratio test, configured with a threshold of `0.75`, filters out ambiguous correspondences.
+
+### Geometric Verification
+
+The surviving correspondences are used to estimate a homography with `cv::findHomography()` and RANSAC.
+
+RANSAC identifies inliers that are consistent with the estimated projective transformation. The resulting inlier mask is used to filter the matches and visualize the geometrically consistent correspondences.
+
+Experiments with different reprojection thresholds demonstrate how parameter selection affects the number of accepted inliers and the resulting visualization.
+
+A larger inlier count does not necessarily imply a better geometric model. The spatial distribution of matches and the plausibility of the resulting transformation also matter.
+
+## Experimental Results
+
+The repository contains visualizations from different stages of the matching pipeline:
+
+| Output | Description |
+|---|---|
+| `01_siegestor_keypoints_i1.jpg` | ORB keypoints detected in the first image |
+| `02_siegestor_keypoints_i2.jpg` | ORB keypoints detected in the second image |
+| `03_siegestor_matches_all_found.jpg` | Initial descriptor-match visualization |
+| `04_siegestor_matches_filter40.jpg` | Matches filtered using a distance threshold of 40 |
+| `05_siegestor_matches_filter30.jpg` | Matches filtered using a distance threshold of 30 |
+| `06_siegestor_matches_filter50.jpg` | Matches filtered using a distance threshold of 50 |
+| `07_siegestor_matches_ratio.jpg` | Matches retained by Lowe's ratio test |
+| `08_siegestor_matches_RANSAC.jpg` | RANSAC-filtered matches |
+| `09_siegestor_matches_RANSAC_0_5.jpg` | RANSAC results with a 0.5-pixel reprojection threshold |
+| `10_siegestor_matches_RANSAC_1.jpg` | RANSAC results with a 1.0-pixel reprojection threshold |
+| `11_siegestor_matches_RANSAC_3.jpg` | RANSAC results with a 3.0-pixel reprojection threshold |
+
+The output images document the evolution of the experiment, from initial descriptor matching to geometric verification.
 
 ## Project Structure
 
 ```text
-03-feature-matching-lab/
+feature-matching-lab/
 ├── images/
 │   ├── input/
 │   │   ├── siegestor.jpg
@@ -38,7 +67,16 @@ The project is developed incrementally through small experiments, with an emphas
 │   │   └── ATTRIBUTION.md
 │   └── output/
 │       ├── 01_siegestor_keypoints_i1.jpg
-│       └── 02_siegestor_keypoints_i2.jpg
+│       ├── 02_siegestor_keypoints_i2.jpg
+│       ├── 03_siegestor_matches_all_found.jpg
+│       ├── 04_siegestor_matches_filter40.jpg
+│       ├── 05_siegestor_matches_filter30.jpg
+│       ├── 06_siegestor_matches_filter50.jpg
+│       ├── 07_siegestor_matches_ratio.jpg
+│       ├── 08_siegestor_matches_RANSAC.jpg
+│       ├── 09_siegestor_matches_RANSAC_0_5.jpg
+│       ├── 10_siegestor_matches_RANSAC_1.jpg
+│       └── 11_siegestor_matches_RANSAC_3.jpg
 ├── src/
 │   └── main.cpp
 ├── .gitignore
@@ -46,38 +84,42 @@ The project is developed incrementally through small experiments, with an emphas
 └── README.md
 ```
 
-- `src/` - C++ source code.
-- `images/input/` - source images used in feature detection and matching experiments.
-- `images/output/` - generated images visualizing detected keypoints and other experimental results.
+- `src/` contains the C++ implementation.
+- `images/input/` contains the source images and their attribution information.
+- `images/output/` contains generated visualizations from the experiments.
+- `.vscode/` contains project-specific Visual Studio Code settings.
+- `CMakeLists.txt` defines the build configuration.
 
-## Current Experiments
+Generated build files and other local artifacts are excluded from version control.
 
-The current implementation uses two photographs of the Siegestor monument in Munich.
+## Technologies
 
-ORB detects keypoints and computes a binary descriptor for each detected feature. The descriptors are then compared using `cv::BFMatcher` with the Hamming distance metric, which is suitable for ORB's binary descriptors.
+- **C++** - implementation language
+- **OpenCV** - feature detection, descriptor matching, and geometric estimation
+- **CMake** - build configuration
+- **Git and GitHub** - version control and project documentation
+- **Visual Studio Code** - development environment
 
-The program currently reports:
+## Learning Focus
 
-- Number of detected keypoints in each image
-- Descriptor matrix dimensions
-- Number of matches
-- Minimum and maximum match distances
-- Number of matches with a zero Hamming distance
+FML explores several core computer vision concepts:
 
-These experiments provide a foundation for investigating match quality, filtering unreliable correspondences, and visualizing matches between images.
+- Local features and keypoint detection
+- Binary descriptors and Hamming distance
+- Brute-force and k-nearest-neighbor matching
+- Ambiguous correspondences and Lowe's ratio test
+- Homography estimation and projective transformations
+- RANSAC, inlier selection, and reprojection thresholds
+- The difference between descriptor similarity and geometric consistency
 
-## Learning Objectives
+## Current Direction
 
-- Understand local image features and keypoints
-- Explore binary feature descriptors and Hamming distance
-- Learn how brute-force feature matching works
-- Investigate the difference between descriptor similarity and reliable correspondence
-- Build computer vision applications in C++ using OpenCV
+The feature-matching pipeline and RANSAC-based filtering are implemented.
 
-## Status
+The next stage focuses on evaluating the estimated homography by projecting image corners and examining whether the resulting transformation is geometrically plausible.
 
-Early development. ORB keypoint detection, descriptor extraction, and brute-force descriptor matching are implemented. The next steps are to filter matches and visualize the correspondences between the two images.
+Further experiments may investigate the effects of viewpoint, scale, illumination, and image content on matching reliability.
 
 ## Image Attribution
 
-Input images and their licensing information are documented in [`images/input/ATTRIBUTION.md`](images/input/ATTRIBUTION.md).
+Sources and licensing information for the input images are documented in [`images/input/ATTRIBUTION.md`](images/input/ATTRIBUTION.md).
