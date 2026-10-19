@@ -12,6 +12,12 @@ The current implementation uses two photographs of the Siegestor monument in Mun
 
 **ORB → Descriptor Matching → Lowe's Ratio Test → Homography Estimation → RANSAC**
 
+## Project Status
+
+The original scope of FML is largely implemented. The project covers the complete feature-matching workflow, from ORB keypoint detection and descriptor extraction to descriptor matching, ratio-test filtering, homography estimation, and RANSAC-based geometric verification.
+
+The remaining work focuses on validating the estimated homography and documenting the results. Further algorithm comparisons and additional experiments may be explored separately, but are not required to complete the original scope.
+
 ## Implementation
 
 ### Feature Detection and Description
